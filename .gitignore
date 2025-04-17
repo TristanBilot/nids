@@ -1,0 +1,14 @@
+*.pyc
+__pycache__
+.vscode
+wandb
+*.err
+*.out
+*.csv
+*.gz
+*.png
+viz/
+OPTC*
+LANL*
+*.sh
+logs/
