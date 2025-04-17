@@ -129,10 +129,10 @@ python src/main.py --config=LANL_custom --dataset_name=LANL_include_20
 python src/main.py --config=LANL_custom --dataset_name=LANL_include_30
 python src/main.py --config=LANL_custom --dataset_name=LANL_include_40
 python src/main.py --config=LANL_custom --dataset_name=LANL_include_50
-python src/main.py --config=LANL_custom --dataset_name=LANL_include_60 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_include_70 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_include_80 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_include_80 --out_node_emb=32 --seed=14
+python src/main.py --config=LANL_custom --dataset_name=LANL_include_60
+python src/main.py --config=LANL_custom --dataset_name=LANL_include_70
+python src/main.py --config=LANL_custom --dataset_name=LANL_include_80
+python src/main.py --config=LANL_custom --dataset_name=LANL_include_80
 
 # Excluded
 python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_10
@@ -140,10 +140,10 @@ python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_20
 python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_30
 python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_40
 python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_50
-python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_60 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_70 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_80 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_80 --out_node_emb=32 --seed=14
+python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_60
+python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_70
+python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_80
+python src/main.py --config=LANL_custom --dataset_name=LANL_exclude_80
 ```
 
 OpTC
@@ -193,8 +193,8 @@ Reproduce the hyperparameter robustness experiments (same for LANL) as follows. 
 
 LANL
 ```
-python src/main.py --config=LANL_inductive_exp2 --out_node_emb=32 --seed=14
-python src/main.py --config=LANL_inductive_exp2 --out_node_emb=64 --epochs=15 --seed=14
+python src/main.py --config=LANL_inductive_exp2 --out_node_emb=32
+python src/main.py --config=LANL_inductive_exp2 --out_node_emb=64
 python src/main.py --config=LANL_inductive_exp2 --out_node_emb=128
 
 python src/main.py --config=LANL_inductive_exp2 --lr=0.01
