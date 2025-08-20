@@ -1,14 +1,13 @@
-# Focus
-This repository contains the code for the paper: **Focus on the Attacker: Inductive and Practical
-Intrusion Detection in Evolving Networks**.
+# FAUCON
+This repository contains the code for the paper: **FAUCON: Targeted Lateral Movement Detection in Evolving Networks Through Source Host Identification**.
 
 ## Dependencies installation
 
 ### Example with conda and CUDA 10.2
 
 ```shell
-conda create -n focus python=3.8
-conda activate focus
+conda create -n faucon python=3.8
+conda activate faucon
 
 pip install torch==1.12.0+cu102 -f https://download.pytorch.org/whl/torch_stable.html
 pip install torch_sparse==0.6.16+pt112cu102 -f https://data.pyg.org/whl/torch-1.12.0%2Bcu102.html
@@ -28,7 +27,12 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
 
 ### Download datasets
 
-- Download `focus_datasets.zip` with {this link}(https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo) (14.35 GB zipped, 18.44 GB unzipped)
+- Download `focus_datasets.zip` with [this link]https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo) (14.35 GB zipped, 18.44 GB unzipped)
+  - or from CLI with:
+  ```
+  sudo apt install megatools
+  megadl https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo
+  ```
 - Decompress the archive with `unzip focus_datasets.zip`
 - In `src/utils/config.py`, set the variable `ROOT` to the absolute path to the unzipped `focus_datasets/` folder
 
