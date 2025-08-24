@@ -1,9 +1,17 @@
 # FAUCON
 This repository contains the code for the paper: **FAUCON: Targeted Lateral Movement Detection in Evolving Networks Through Source Host Identification**.
 
-## Dependencies installation
+## Installation
 
-### Example with conda and CUDA 10.2
+### Clone the repo
+
+```shell
+git clone https://github.com/TristanBilot/faucon.git
+cd faucon
+```
+
+### Install dependencies
+Example with conda and CUDA 10.2:
 
 ```shell
 conda create -n faucon python=3.8
@@ -27,7 +35,7 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
 
 ### Download datasets
 
-- Download `focus_datasets.zip` with [this link]https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo) (14.35 GB zipped, 18.44 GB unzipped)
+- Download `focus_datasets.zip` with [this link](https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo) (14.35 GB zipped, 18.44 GB unzipped)
   - or from CLI with:
   ```
   sudo apt install megatools
