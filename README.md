@@ -11,23 +11,27 @@ cd faucon
 ```
 
 ### Install dependencies
-Example with conda and CUDA 10.2:
+Install the conda env. Set `CUDA_TAG` accordingly.
 
 ```shell
-conda create -n faucon python=3.8
+conda create -n faucon python=3.9 -y
 conda activate faucon
 
-pip install torch==1.12.0+cu102 -f https://download.pytorch.org/whl/torch_stable.html
-pip install torch_sparse==0.6.16+pt112cu102 -f https://data.pyg.org/whl/torch-1.12.0%2Bcu102.html
-pip install torch_scatter==2.1.0+pt112cu102 -f https://data.pyg.org/whl/torch-1.12.0%2Bcu102.html
-pip install torch_cluster==1.6.0+pt112cu102 -f https://data.pyg.org/whl/torch-1.12.0%2Bcu102.html
-pip install torch_geometric -f https://data.pyg.org/whl/torch-1.12.0+cu102.html
-pip install pyg_lib -f https://data.pyg.org/whl/torch-1.12.0+cu102.html
+# CUDA_TAG: e.g. cu102 | cu113 | cu118 | cu121 | cpu
+CUDA_TAG=cu118
+TORCH_VER=2.2.2
+
+if [ "$CUDA_TAG" = "cpu" ]; then
+  pip install torch==$TORCH_VER --index-url https://download.pytorch.org/whl/cpu
+else
+  pip install torch==$TORCH_VER --index-url https://download.pytorch.org/whl/$CUDA_TAG
+fi
+
+PYG_URL="https://data.pyg.org/whl/torch-${TORCH_VER}%2B${CUDA_TAG}.html"
+pip install torch_sparse torch_scatter torch_cluster pyg_lib torch_geometric -f $PYG_URL
 
 pip install pandas==2.0.3 scikit-learn==1.0.2 matplotlib==3.7.4 igraph==0.11.3 wandb==0.15.11
 ```
-
-
 
 ## Dataset
 We made available our preprocessed LANL and OpTC datasets. Within each dataset, one file represents a 1-min TW in csv format. To save place when the archive is unzipped, the csv files for the OpTC dataset are compressed in `.gz` format and the data loader directly reads from the compressed csv file, thereby saving disk space. Once downloaded, the preprocessed datasets have to be **compiled** from 1-min csv files to 30-min (OpTC) and 60-min (LANL) graph snapshots in PyTorch tensor format saved as `.pkl` files.
