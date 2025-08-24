@@ -42,7 +42,7 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
   megadl https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo
   ```
 - Decompress the archive with `unzip focus_datasets.zip`
-- In `src/utils/config.py`, set the variable `ROOT` to the absolute path to the unzipped `focus_datasets/` folder
+- The default path to this folder is `faucon/focus_datasets/`. If your folder is elsewhere, set the variable `ROOT` to the absolute path to the unzipped `focus_datasets/` folder `src/utils/config.py`.
 
 ### Compile datasets
 
