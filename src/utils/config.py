@@ -4,9 +4,8 @@ This file centralizes all the configuration variables for preprocessing.
 import os
 
 
-# NOTE: replace with the absolute path to the uncompressed datasets folder
-ROOT = ""
-assert ROOT, "Please set the path to dataset in config.py"
+# NOTE: if needed, replace with the absolute path to the uncompressed datasets folder
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "focus_datasets")
 
 # Root paths
 OPTC_ROOT = os.path.join(ROOT, "OPTC/")

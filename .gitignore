@@ -12,3 +12,6 @@ OPTC*
 LANL*
 *.sh
 logs/
+__MACOSX
+.DS_Store
+focus_datasets.zip
