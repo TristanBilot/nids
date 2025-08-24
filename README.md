@@ -228,3 +228,7 @@ python src/main.py --config=OPTC_inductive_exp2 --lr=0.01
 python src/main.py --config=OPTC_inductive_exp2 --lr=0.001
 python src/main.py --config=OPTC_inductive_exp2 --lr=0.0001
 ```
+
+## License
+
+See [license](LICENSE).
