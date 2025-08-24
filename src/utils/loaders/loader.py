@@ -309,7 +309,7 @@ class AbstractLoader:
         if len(all_snapshots) == 0:
             raise FileNotFoundError(f"No files found in {preprocessed_path}")
 
-        get_sc_from_filename = lambda x: int(re.search(r"(\d+)(?=\.csv$)", x).group(1))
+        get_sc_from_filename = lambda x: int(re.search(r"(\d+)(?=\.csv(?:\.gz)?$)", x).group(1))
         all_sorted_snapshots = sorted(
             all_snapshots, key=lambda x: get_sc_from_filename(x)
         )
