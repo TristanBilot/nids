@@ -13,7 +13,7 @@ from torch_geometric.nn import (
     SAGEConv,
 )
 
-class FocusEncoder(MessagePassing):
+class FauconEncoder(MessagePassing):
     def __init__(
         self,
         x_dim,

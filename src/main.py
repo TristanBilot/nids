@@ -50,7 +50,7 @@ config = {
     "use_no_self_loops": "True",
     "use_skip_connection": "",
     "use_fast_neg_sampling": "False",
-    "encoder": "FOCUS",
+    "encoder": "FAUCON",
     "use_recon_loss": "",
     "use_contra_loss": "",
     "use_ap_loss": "",
