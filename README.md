@@ -7,6 +7,7 @@ This repository contains the code for the paper: **FAUCON: Targeted Lateral Move
 
 ```shell
 git clone https://github.com/TristanBilot/faucon.git
+git clone https://anonymous.4open.science/r/faucon-E5D2/README.md (anonymized)
 cd faucon
 ```
 
