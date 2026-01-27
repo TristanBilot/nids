@@ -3,13 +3,6 @@ This repository contains the code for the paper: **LARES: Targeted Lateral Movem
 
 ## Installation
 
-### Clone the repo
-
-```shell
-git clone https://github.com/TristanBilot/lares.git
-cd lares
-```
-
 ### Install dependencies
 Install the conda env. Set `CUDA_TAG` accordingly.
 
