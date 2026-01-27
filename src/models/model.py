@@ -9,7 +9,7 @@ from .encoders import (
     VAE,
     Autoencoder,
     GINENet,
-    FauconEncoder,
+    LaresEncoder,
     Argus_LANL,
     Argus_OPTC,
     GraphAttentionEmbedding,
@@ -64,8 +64,8 @@ class Model(nn.Module):
         out = out_node_emb
 
         # Encoder
-        if encoder == "FAUCON":
-            self.encoder = FauconEncoder(
+        if encoder == "LARES":
+            self.encoder = LaresEncoder(
                 x_dim=x_dim,
                 h_dim=hid,
                 z_dim=out,

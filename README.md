@@ -1,21 +1,21 @@
-# FAUCON
-This repository contains the code for the paper: **FAUCON: Targeted Lateral Movement Detection in Evolving Networks Through Source Host Identification**.
+# LARES
+This repository contains the code for the paper: **LARES: Targeted Lateral Movement Detection in Evolving Networks Through Source Host Identification**.
 
 ## Installation
 
 ### Clone the repo
 
 ```shell
-git clone https://github.com/TristanBilot/faucon.git
-cd faucon
+git clone https://github.com/TristanBilot/lares.git
+cd lares
 ```
 
 ### Install dependencies
 Install the conda env. Set `CUDA_TAG` accordingly.
 
 ```shell
-conda create -n faucon python=3.9 -y
-conda activate faucon
+conda create -n lares python=3.9 -y
+conda activate lares
 
 # CUDA_TAG: e.g. cu102 | cu113 | cu118 | cu121 | cpu
 CUDA_TAG=cu118
@@ -39,18 +39,18 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
 
 ### Download datasets
 
-- Download `focus_datasets.zip` with [this link](https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo) (14.35 GB zipped, 18.44 GB unzipped)
+- Download `lanl_optc_datasets.zip` with [this link](https://mega.nz/file/icYyQLRJ#r8aiObb_eJXhhfgNMDhbf_asRU61XGuaB5-UxzYfRfo) (14.35 GB zipped, 18.44 GB unzipped)
   - or from CLI with:
   ```
   sudo apt install megatools
-  megadl https://mega.nz/file/eBZRxRJJ#IvzPBKITBL3_TjjJemeiJDPE5p3TpJQ0Fnmq7WNWLXo
+  megadl https://mega.nz/file/icYyQLRJ#r8aiObb_eJXhhfgNMDhbf_asRU61XGuaB5-UxzYfRfo
   ```
-- Decompress the archive with `unzip focus_datasets.zip`
-- The default path to this folder is `faucon/focus_datasets/`. If your folder is elsewhere, set the variable `ROOT` to the absolute path to the unzipped `focus_datasets/` folder `src/utils/config.py`.
+- Decompress the archive in the root of the repo with `tar -xzf lanl_optc_datasets.tar.gz`
+- If your uncompressed folder is elsewhere, set the variable `ROOT` to the absolute path to the `lanl_optc_datasets/` folder `src/utils/config.py`.
 
 ### Compile datasets
 
-To compile the graphs in a usable tensor format, simply run `datasets.py` followed by the **dataset** name (name of the folder where the compiled graphs will be stored on disk) and the inductive experiment to apply on these graphs. The compiled graphs will be generated within the `focus_datasets` folder set in `ROOT`. Note that these commands may be run in parallel. If `dataset_name` is changed, please ensure to change it accordingly within `config.py`.
+To compile the graphs in a usable tensor format, simply run `datasets.py` followed by the **dataset** name (name of the folder where the compiled graphs will be stored on disk) and the inductive experiment to apply on these graphs. The compiled graphs will be generated within the `lanl_optc_datasets` folder set in `ROOT`. Note that these commands may be run in parallel. If `dataset_name` is changed, please ensure to change it accordingly within `config.py`.
 
 LANL
 ```

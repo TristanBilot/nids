@@ -5,7 +5,7 @@ import os
 
 
 # NOTE: if needed, replace with the absolute path to the uncompressed datasets folder
-ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "focus_datasets")
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "lanl_optc_datasets")
 
 # Root paths
 OPTC_ROOT = os.path.join(ROOT, "OPTC/")
@@ -204,7 +204,7 @@ CONFIGS = {
         "epochs": 10,
         "iterations": 1,
         "dataset": "LANL",
-        "encoder": "FAUCON",
+        "encoder": "LARES",
         "lr": 0.0001,
         "alpha": 3,
         "beta": 350,
@@ -223,7 +223,7 @@ CONFIGS = {
         "epochs": 10,
         "iterations": 1,
         "dataset": "OPTC",
-        "encoder": "FAUCON",
+        "encoder": "LARES",
         "lr": 0.001,
         "alpha": 5,
         "beta": 30,
