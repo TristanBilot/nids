@@ -265,7 +265,7 @@ class Model(nn.Module):
         maybe_neg = maybe_neg[:, maybe_neg[0] != maybe_neg[1]]  # remove self-loops
         neg_hash = el_hash(maybe_neg)
 
-        neg_samples = maybe_neg[:, ~np.in1d(neg_hash, el1d)]
+        neg_samples = maybe_neg[:, ~np.isin(neg_hash, el1d)]
         return torch.tensor(neg_samples).to(self.device)
 
     def _get_negative_samples(self, edge_index):

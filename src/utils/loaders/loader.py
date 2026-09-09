@@ -1,4 +1,5 @@
 import glob
+import gzip
 import math
 import os
 import pickle
@@ -307,6 +308,18 @@ class AbstractLoader:
         preprocessed_path = os.path.join(self.preprocessed_path, f"*{extension}")
         all_snapshots = glob.glob(preprocessed_path)
         if len(all_snapshots) == 0:
+            # The raw 1-min files are only required to compile snapshots. When they are
+            # absent but the compiled snapshots are available (e.g. the lightweight
+            # bundle used to evaluate from released weights), we read the compiled
+            # `.pkl` files directly and skip the raw files entirely.
+            if not self._do_compile:
+                if self._nb_compiled_snapshots() > 0:
+                    return []
+                raise FileNotFoundError(
+                    f"Neither compiled snapshots ({self._compiled_path}/*.pkl) nor raw "
+                    f"1-min files ({preprocessed_path}) were found. Compile the dataset "
+                    f"with src/datasets.py, or download the compiled snapshots."
+                )
             raise FileNotFoundError(f"No files found in {preprocessed_path}")
 
         get_sc_from_filename = lambda x: int(re.search(r"(\d+)(?=\.csv(?:\.gz)?$)", x).group(1))
@@ -345,6 +358,10 @@ class AbstractLoader:
         Some snapshots don't have any data (no existing file), so we need
         to count the number of existing snapshots to compute the number of batches.
         """
+        # Compiled-only mode: one batch per compiled snapshot file.
+        if len(self._all_sorted_snapshots) == 0:
+            return self._nb_compiled_snapshots()
+
         nb_batches = math.ceil(len(self._all_sorted_snapshots) / self._batch_size)
         return nb_batches
 
@@ -372,6 +389,12 @@ class AbstractLoader:
         edge_feats[nonzero] = standardized
         return edge_feats
 
+    def _nb_compiled_snapshots(self) -> int:
+        """
+        Number of already-compiled snapshots available on disk for this split.
+        """
+        return len(glob.glob(os.path.join(self._compiled_path, "*.pkl")))
+
     def saved_snapshot_path_at_idx(self, idx):
         return os.path.join(self._compiled_path, f"{idx}.pkl")
 
@@ -381,19 +404,33 @@ class AbstractLoader:
         with open(self.saved_snapshot_path_at_idx(self._batch_count), "wb") as f:
             pickle.dump((edge_index, edge_feats, labels), f)
 
+    def _read_snapshot_file(self, path):
+        """
+        Reads one compiled snapshot. Files may be plain or gzip-compressed pickles;
+        compressed ones are produced by tools/make_colab_bundle.py to keep the
+        downloadable bundles small, and are detected here by their magic bytes.
+        """
+        with open(path, "rb") as f:
+            if f.read(2) == b"\x1f\x8b":
+                f.seek(0)
+                with gzip.open(f, "rb") as g:
+                    return pickle.load(g)
+            f.seek(0)
+            return pickle.load(f)
+
     def _load_preprocessed_snapshot(self):
         self._batch_count += 1
-        with open(self.saved_snapshot_path_at_idx(self._batch_count), "rb") as f:
-            if self._eye == None:
-                self._eye = torch.eye(self._nb_nodes, device=self.device)
 
-            (edge_index, edge_feats, labels, *_) = pickle.load(f)
-            # We generate the node feats at the fly here.
-            x = self._eye
+        if self._eye == None:
+            self._eye = torch.eye(self._nb_nodes, device=self.device)
 
-            data = self._to_torch_geo_data(edge_index, edge_feats, labels, x)
+        (edge_index, edge_feats, labels, *_) = self._read_snapshot_file(
+            self.saved_snapshot_path_at_idx(self._batch_count)
+        )
+        # We generate the node feats at the fly here.
+        x = self._eye
 
-        return data
+        return self._to_torch_geo_data(edge_index, edge_feats, labels, x)
 
     def _to_torch_geo_data(self, edge_index, edge_feats, labels, x=None) -> Data:
         if not isinstance(edge_index, torch.Tensor):
@@ -504,8 +541,8 @@ class AbstractLoader:
     def mask_percent_nodes_include_malicious(self, p: float):
         percent = int(self._nb_nodes * p)
 
-        available_nodes = set(range(1, self._nb_nodes)) - set(
-            self._malicious_src_nodes
+        available_nodes = sorted(
+            set(range(1, self._nb_nodes)) - set(self._malicious_src_nodes)
         )
         sample = torch.tensor(random.sample(available_nodes, percent))
 
@@ -514,7 +551,7 @@ class AbstractLoader:
     def mask_percent_nodes_exclude_malicious(self, p: float):
         percent = int(self._nb_nodes * p)
 
-        available_nodes = set(range(1, self._nb_nodes))
+        available_nodes = sorted(set(range(1, self._nb_nodes)))
         sample = torch.tensor(random.sample(available_nodes, percent))
         sample[: len(self._malicious_src_nodes)] = torch.tensor(
             self._malicious_src_nodes

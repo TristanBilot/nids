@@ -4,8 +4,16 @@ This file centralizes all the configuration variables for preprocessing.
 import os
 
 
-# NOTE: if needed, replace with the absolute path to the uncompressed datasets folder
-ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "lanl_optc_datasets")
+# Absolute path to the uncompressed datasets folder. Defaults to `lanl_optc_datasets/`
+# at the root of this repository; override it with the LARES_DATA_ROOT environment
+# variable (used by the Colab notebook) or by editing the fallback below.
+ROOT = os.environ.get(
+    "LARES_DATA_ROOT",
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        "lanl_optc_datasets",
+    ),
+)
 
 # Root paths
 OPTC_ROOT = os.path.join(ROOT, "OPTC/")

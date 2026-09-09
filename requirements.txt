@@ -1,0 +1,15 @@
+# Pip-only installation (see README for the conda + CUDA wheel instructions).
+# torch and torch_geometric are intentionally left unpinned for CUDA/platform
+# flexibility; install them first, e.g.:
+#   pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cu118
+#   pip install torch_geometric==2.6.1
+# The compiled PyG extensions (torch_scatter/torch_sparse/torch_cluster/pyg_lib)
+# are NOT required: no module under src/ imports them.
+pandas==2.0.3
+scikit-learn==1.0.2
+matplotlib==3.7.4
+igraph==0.11.3
+wandb==0.15.11
+joblib
+tqdm
+numpy

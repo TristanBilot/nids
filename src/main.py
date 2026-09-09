@@ -122,7 +122,7 @@ wandb.init(
 )
 
 current_path = os.path.dirname(os.path.abspath(__file__))
-weights_path = "/".join(current_path.split("/")[:-1]) + "/weights/"
+weights_path = os.path.join(os.path.dirname(current_path), "weights")
 weight_file = os.path.join(weights_path, f"weights_{args.config}.pkl")
 os.makedirs(weights_path, exist_ok=True)
 conf = CONF(args)
@@ -152,11 +152,15 @@ def eval_model(model, valid_loader):
     return tot_loss / valid_loader.nb_batches
 
 
+USE_CUDA = DEVICE.type == "cuda"
+
+
 def main(
     loaders: list,
     args=None,
 ):
-    torch.cuda.reset_peak_memory_stats(DEVICE)
+    if USE_CUDA:
+        torch.cuda.reset_peak_memory_stats(DEVICE)
     train_loader, valid_loader, test_loader = loaders
     best_metric, best_stats, best_model = -1, 0, None
     epoch_time, val_loss = 0, 0
@@ -191,7 +195,7 @@ def main(
     for e in range(args.epochs):
         
         if args.use_weights:
-            model.load_state_dict(torch.load(weight_file))
+            model.load_state_dict(torch.load(weight_file, map_location=DEVICE))
             
         else:
             print(f"\nEPOCH {e+1}/{args.epochs}")
@@ -253,8 +257,9 @@ def main(
         }
         
         wandb.log(stats)
-        peak_memory = torch.cuda.max_memory_allocated(DEVICE) / (1024 ** 3)  # Convert to GB
-        print(f"Peak CUDA memory usage: {peak_memory:.2f} GB")
+        if USE_CUDA:
+            peak_memory = torch.cuda.max_memory_allocated(DEVICE) / (1024 ** 3)  # Convert to GB
+            print(f"Peak CUDA memory usage: {peak_memory:.2f} GB")
 
         if mcc > best_metric:
             best_metric = mcc

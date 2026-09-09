@@ -19,7 +19,7 @@ class FastNegativeSampling:
             )  # generates a 2d matrix
             neg_hash = el_hash(maybe_neg)
 
-            neg = np.concatenate([neg, maybe_neg[:, ~np.in1d(neg_hash, el1d)]], axis=1)
+            neg = np.concatenate([neg, maybe_neg[:, ~np.isin(neg_hash, el1d)]], axis=1)
         neg = torch.tensor(neg[:, :batch_size]).long()
         pos = edge_index
         return pos, neg
