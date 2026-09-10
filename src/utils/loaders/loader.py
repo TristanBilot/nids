@@ -407,8 +407,7 @@ class AbstractLoader:
     def _read_snapshot_file(self, path):
         """
         Reads one compiled snapshot. Files may be plain or gzip-compressed pickles;
-        compressed ones are produced by tools/make_colab_bundle.py to keep the
-        downloadable bundles small, and are detected here by their magic bytes.
+        compressed ones are detected by their magic bytes.
         """
         with open(path, "rb") as f:
             if f.read(2) == b"\x1f\x8b":

@@ -3,36 +3,19 @@ This repository contains the code for the paper: **LARES: Targeted Lateral Movem
 
 ## Quick start on Google Colab
 
-Two notebooks, each with one job. Open them with **File → Upload notebook** in
+[`colab/LARES_artifact.ipynb`](colab/LARES_artifact.ipynb) reproduces the paper's main
+results end to end on a free Colab runtime. Open it with **File → Upload notebook** in
 [Google Colab](https://colab.research.google.com/), or through **File → Open notebook →
-GitHub**.
+GitHub**, set `DATASET_URL` in section 1 to a Google Drive link of
+`lanl_optc_datasets.tar.gz`, then **Runtime → Run all**.
 
-[`colab/LARES_artifact.ipynb`](colab/LARES_artifact.ipynb) is the one reviewers run. It
-installs the environment, downloads the released weights and a small data bundle, and
-reproduces Table II, Table VII, Figure 2 and the *Detection* row of Table III. About 20
-minutes, about 0.3 GB for LANL, and a CPU runtime is enough.
-
-[`colab/LARES_full_pipeline.ipynb`](colab/LARES_full_pipeline.ipynb) is for the authors. It
-downloads the full 14.35 GB preprocessed dataset, compiles the graph snapshots, packages
-the bundle the first notebook consumes, and optionally retrains. Hours, and about 32 GB of
-disk.
-
-The bundle holds only the **compiled test snapshots**, which is all `--use_weights=True`
-reads: the training and validation loaders are constructed but never iterated, and the
-inductive masking of Exp0–Exp3 applies to the training split only, so the test split is
-identical across the four experiments and is stored once. Snapshots are rewritten as
-gzip-compressed pickles with int32 indices and float32 features, which is lossless because
-the loader casts to those types anyway. Build the bundles with:
-
-```shell
-export LARES_DATA_ROOT=/path/to/lanl_optc_datasets
-python tools/make_colab_bundle.py --dataset LANL --out ./bundles
-python tools/make_colab_bundle.py --dataset OPTC --out ./bundles
-```
-
-then publish the archives and set `BUNDLE_URLS` in section 2 of the evaluation notebook.
-Anonymous MEGA links are bandwidth-capped per IP address and Colab exits through shared
-addresses, so set `MEGA_USERNAME` in the same section if you host the bundles on MEGA.
+The notebook clones this repository with its released weights, downloads and extracts the
+preprocessed dataset, compiles the graph snapshots, evaluates from the weights, and prints
+the reproduced numbers next to the published ones (Table II, Table VII, Figure 2, and the
+*Detection* row of Table III). Expect several hours end to end, dominated by snapshot
+compilation; restricting the notebook to LANL gives the shortest complete run. A CPU
+runtime is sufficient. Interrupted sessions can be resumed by running all cells again:
+finished downloads and compilations are detected and skipped.
 
 ## Installation
 
@@ -84,9 +67,10 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
   `export LARES_DATA_ROOT=/data/lanl_optc_datasets`. Editing `ROOT` in
   `src/utils/config.py` also works.
 
-> The MEGA link is bandwidth-limited per IP address. Downloading the full 14.35 GB archive
-> from a cloud runtime such as Colab often aborts; download it once locally, or use the
-> lightweight bundles described in [Quick start on Google Colab](#quick-start-on-google-colab).
+> The MEGA link is bandwidth-limited per IP address, and downloading the archive from a
+> cloud runtime such as Colab often aborts. The Colab notebook therefore downloads the same
+> archive from a Google Drive link instead (see
+> [Quick start on Google Colab](#quick-start-on-google-colab)).
 
 ### Compile datasets
 
@@ -291,7 +275,7 @@ weights-based path, >40 GB for the full pipeline.
 |---|---|---|
 | Table II, LARES rows | `python src/main.py --config={LANL,OPTC}_inductive_exp{0,1,2,3} --use_weights=True` | no |
 | Table VII, LARES rows | same commands, node-level block of the output | no |
-| Figure 2, FP counts on LANL | notebook §7.2, from the Exp0 run | no |
+| Figure 2, FP counts on LANL | notebook §5.2, from the Exp0 run | no |
 | Table III, *Detection* row | add `--use_direct_edge_detection=True` | no |
 | Table III, other rows | *Ablation study* section above | yes |
 | Figures 1 and 4 | *MCC @ 10-100% of unseen hosts* section above | yes |
