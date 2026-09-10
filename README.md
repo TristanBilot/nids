@@ -1,6 +1,39 @@
 # LARES
 This repository contains the code for the paper: **LARES: Targeted Lateral Movement Detection in Evolving Networks Through Source Host Identification**.
 
+## Quick start on Google Colab
+
+Two notebooks, each with one job. Open them with **File → Upload notebook** in
+[Google Colab](https://colab.research.google.com/), or through **File → Open notebook →
+GitHub**.
+
+[`colab/LARES_artifact.ipynb`](colab/LARES_artifact.ipynb) is the one reviewers run. It
+installs the environment, downloads the released weights and a small data bundle, and
+reproduces Table II, Table VII, Figure 2 and the *Detection* row of Table III. About 20
+minutes, about 0.3 GB for LANL, and a CPU runtime is enough.
+
+[`colab/LARES_full_pipeline.ipynb`](colab/LARES_full_pipeline.ipynb) is for the authors. It
+downloads the full 14.35 GB preprocessed dataset, compiles the graph snapshots, packages
+the bundle the first notebook consumes, and optionally retrains. Hours, and about 32 GB of
+disk.
+
+The bundle holds only the **compiled test snapshots**, which is all `--use_weights=True`
+reads: the training and validation loaders are constructed but never iterated, and the
+inductive masking of Exp0–Exp3 applies to the training split only, so the test split is
+identical across the four experiments and is stored once. Snapshots are rewritten as
+gzip-compressed pickles with int32 indices and float32 features, which is lossless because
+the loader casts to those types anyway. Build the bundles with:
+
+```shell
+export LARES_DATA_ROOT=/path/to/lanl_optc_datasets
+python tools/make_colab_bundle.py --dataset LANL --out ./bundles
+python tools/make_colab_bundle.py --dataset OPTC --out ./bundles
+```
+
+then publish the archives and set `BUNDLE_URLS` in section 2 of the evaluation notebook.
+Anonymous MEGA links are bandwidth-capped per IP address and Colab exits through shared
+addresses, so set `MEGA_USERNAME` in the same section if you host the bundles on MEGA.
+
 ## Installation
 
 ### Install dependencies
@@ -26,6 +59,13 @@ pip install torch_sparse torch_scatter torch_cluster pyg_lib torch_geometric -f 
 pip install pandas==2.0.3 scikit-learn==1.0.2 matplotlib==3.7.4 igraph==0.11.3 wandb==0.15.11
 ```
 
+`torch_sparse`, `torch_scatter`, `torch_cluster` and `pyg_lib` are optional: no module
+under `src/` imports them, and plain `torch_geometric` is sufficient. Skipping them avoids
+a long source build on platforms without prebuilt wheels. A pip-only dependency list is
+also provided in [`requirements.txt`](requirements.txt).
+
+Tested with Python 3.9 through 3.12.
+
 ## Dataset
 We made available our preprocessed LANL and OpTC datasets. Within each dataset, one file represents a 1-min TW in csv format. To save place when the archive is unzipped, the csv files for the OpTC dataset are compressed in `.gz` format and the data loader directly reads from the compressed csv file, thereby saving disk space. Once downloaded, the preprocessed datasets have to be **compiled** from 1-min csv files to 30-min (OpTC) and 60-min (LANL) graph snapshots in PyTorch tensor format saved as `.pkl` files.
 Once compiled, the graphs can be loaded in an efficient way, and experiments can be reproduced.
@@ -39,11 +79,24 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
   megadl https://mega.nz/file/icYyQLRJ#r8aiObb_eJXhhfgNMDhbf_asRU61XGuaB5-UxzYfRfo
   ```
 - Decompress the archive in the root of the repo with `tar -xzf lanl_optc_datasets.tar.gz`
-- If your uncompressed folder is elsewhere, set the variable `ROOT` to the absolute path to the `lanl_optc_datasets/` folder `src/utils/config.py`.
+- If your uncompressed folder is elsewhere, point the `LARES_DATA_ROOT` environment
+  variable at the absolute path of the `lanl_optc_datasets/` folder, e.g.
+  `export LARES_DATA_ROOT=/data/lanl_optc_datasets`. Editing `ROOT` in
+  `src/utils/config.py` also works.
+
+> The MEGA link is bandwidth-limited per IP address. Downloading the full 14.35 GB archive
+> from a cloud runtime such as Colab often aborts; download it once locally, or use the
+> lightweight bundles described in [Quick start on Google Colab](#quick-start-on-google-colab).
 
 ### Compile datasets
 
 To compile the graphs in a usable tensor format, simply run `datasets.py` followed by the **dataset** name (name of the folder where the compiled graphs will be stored on disk) and the inductive experiment to apply on these graphs. The compiled graphs will be generated within the `lanl_optc_datasets` folder set in `ROOT`. Note that these commands may be run in parallel. If `dataset_name` is changed, please ensure to change it accordingly within `config.py`.
+
+> The hosts masked by `Exp1`-`Exp3` are drawn with a fixed seed, so compilation is
+> deterministic on a given Python version. The draw itself differs between Python 3.10
+> and earlier and Python 3.11 and later, because `random.sample` no longer accepts a
+> set. This changes which hosts are hidden during training, not the test split, so
+> evaluation from the released weights is unaffected.
 
 LANL
 ```
@@ -221,6 +274,32 @@ python src/main.py --config=OPTC_inductive_exp2 --lr=0.01
 python src/main.py --config=OPTC_inductive_exp2 --lr=0.001
 python src/main.py --config=OPTC_inductive_exp2 --lr=0.0001
 ```
+
+## Artifact evaluation (ACSAC 2026)
+
+**Public release.** The full artifact is released publicly: this repository (source code
+and trained weights), the preprocessed LANL and OpTC datasets with the ground-truth labels
+used in the paper, and the Colab notebook. No component is withheld after evaluation.
+
+**Requirements.** Linux or macOS, Python 3.9–3.12, ~2 GB of GPU memory (a CPU-only run is
+supported and is sufficient to evaluate from the released weights). Disk: ~5 GB for the
+weights-based path, >40 GB for the full pipeline.
+
+**Where each claim is reproduced.**
+
+| Paper item | Command or notebook section | Needs training |
+|---|---|---|
+| Table II, LARES rows | `python src/main.py --config={LANL,OPTC}_inductive_exp{0,1,2,3} --use_weights=True` | no |
+| Table VII, LARES rows | same commands, node-level block of the output | no |
+| Figure 2, FP counts on LANL | notebook §7.2, from the Exp0 run | no |
+| Table III, *Detection* row | add `--use_direct_edge_detection=True` | no |
+| Table III, other rows | *Ablation study* section above | yes |
+| Figures 1 and 4 | *MCC @ 10-100% of unseen hosts* section above | yes |
+| Figure 8 | *Hyperparameter changes* section above | yes |
+
+Each command in the *From weights* section runs in a few minutes and prints the node-level
+metrics (stage 1, Table VII) followed by the edge-level metrics (stage 2, Table II). The
+notebook collects them into a table that is compared against the published values.
 
 ## License
 
