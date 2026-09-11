@@ -15,3 +15,5 @@ logs/
 __MACOSX
 .DS_Store
 lanl_optc_datasets.zip
+lanl_optc_datasets.tar.gz
+lanl_optc_datasets/

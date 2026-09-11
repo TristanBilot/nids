@@ -400,8 +400,22 @@ class AbstractLoader:
 
     def _save_preprocessed_snapshot(self, edge_index, edge_feats, labels):
         os.makedirs(self._compiled_path, exist_ok=True)
+        path = self.saved_snapshot_path_at_idx(self._batch_count)
 
-        with open(self.saved_snapshot_path_at_idx(self._batch_count), "wb") as f:
+        # With LARES_COMPRESS_COMPILED set, snapshots are written as gzip-compressed
+        # pickles with narrower dtypes. This is lossless with respect to what the model
+        # consumes: loading casts the edge index to int64, the edge features to float32
+        # and the labels to int anyway. It shrinks the compiled dataset several-fold,
+        # which makes it practical to redistribute directly.
+        if os.environ.get("LARES_COMPRESS_COMPILED"):
+            ei = edge_index.cpu().numpy().astype(np.int32) if isinstance(edge_index, torch.Tensor) else np.asarray(edge_index).astype(np.int32)
+            ef = edge_feats.cpu().numpy().astype(np.float32) if isinstance(edge_feats, torch.Tensor) else np.asarray(edge_feats).astype(np.float32)
+            y = labels.cpu().numpy().astype(np.int8) if isinstance(labels, torch.Tensor) else np.asarray(labels).astype(np.int8)
+            with gzip.open(path, "wb", compresslevel=6) as f:
+                pickle.dump((ei, ef, y), f, protocol=pickle.HIGHEST_PROTOCOL)
+            return
+
+        with open(path, "wb") as f:
             pickle.dump((edge_index, edge_feats, labels), f)
 
     def _read_snapshot_file(self, path):
