@@ -55,6 +55,17 @@ Tested with Python 3.9 through 3.12.
 We made available our preprocessed LANL and OpTC datasets. Within each dataset, one file represents a 1-min TW in csv format. To save place when the archive is unzipped, the csv files for the OpTC dataset are compressed in `.gz` format and the data loader directly reads from the compressed csv file, thereby saving disk space. Once downloaded, the preprocessed datasets have to be **compiled** from 1-min csv files to 30-min (OpTC) and 60-min (LANL) graph snapshots in PyTorch tensor format saved as `.pkl` files.
 Once compiled, the graphs can be loaded in an efficient way, and experiments can be reproduced.
 
+### Provenance and ethics
+
+Both datasets are public research releases: the LANL "Comprehensive, Multi-Source
+Cyber-Security Events" dataset (Kent, 2015) and the DARPA Operationally Transparent Cyber
+(OpTC) dataset. They were collected and anonymized by their original publishers; they
+contain no personally identifiable information, and hosts appear only as anonymized
+identifiers. This repository redistributes them in preprocessed form (per-minute event
+files and compiled graph snapshots) together with the standardized ground-truth labels
+used in the paper, to make reproduction exact. Intended use is research on network
+intrusion and lateral movement detection.
+
 ### Download datasets
 
 - Download `lanl_optc_datasets.tar.gz` (14.35 GB, 18.44 GB uncompressed) from Google Drive
