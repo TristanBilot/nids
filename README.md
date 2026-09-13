@@ -58,11 +58,11 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
 ### Download datasets
 
 - Download `lanl_optc_datasets.tar.gz` (14.35 GB, 18.44 GB uncompressed) from Google Drive
-  with [this link](GOOGLE-DRIVE-LINK-TO-RAW-DATASET)
+  with [this link](https://drive.google.com/file/d/10fdDttLXP8zYwlrhqFzOe_kEvDGokfVY/view?usp=sharing)
   - or from the CLI with:
   ```
   pip install gdown
-  gdown --fuzzy "GOOGLE-DRIVE-LINK-TO-RAW-DATASET"
+  gdown "10fdDttLXP8zYwlrhqFzOe_kEvDGokfVY"
   ```
 - Decompress the archive in the root of the repo with `tar -xzf lanl_optc_datasets.tar.gz`
 - If your uncompressed folder is elsewhere, point the `LARES_DATA_ROOT` environment
