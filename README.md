@@ -57,11 +57,12 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
 
 ### Download datasets
 
-- Download `lanl_optc_datasets.zip` with [this link](https://mega.nz/file/icYyQLRJ#r8aiObb_eJXhhfgNMDhbf_asRU61XGuaB5-UxzYfRfo) (14.35 GB zipped, 18.44 GB unzipped)
-  - or from CLI with:
+- Download `lanl_optc_datasets.tar.gz` (14.35 GB, 18.44 GB uncompressed) from Google Drive
+  with [this link](GOOGLE-DRIVE-LINK-TO-RAW-DATASET)
+  - or from the CLI with:
   ```
-  sudo apt install megatools
-  megadl https://mega.nz/file/icYyQLRJ#r8aiObb_eJXhhfgNMDhbf_asRU61XGuaB5-UxzYfRfo
+  pip install gdown
+  gdown --fuzzy "GOOGLE-DRIVE-LINK-TO-RAW-DATASET"
   ```
 - Decompress the archive in the root of the repo with `tar -xzf lanl_optc_datasets.tar.gz`
 - If your uncompressed folder is elsewhere, point the `LARES_DATA_ROOT` environment
@@ -69,14 +70,13 @@ Once compiled, the graphs can be loaded in an efficient way, and experiments can
   `export LARES_DATA_ROOT=/data/lanl_optc_datasets`. Editing `ROOT` in
   `src/utils/config.py` also works.
 
-> The MEGA link is bandwidth-limited per IP address, and downloading the archive from a
-> cloud runtime such as Colab often aborts. The Colab notebook therefore downloads the same
-> archive from a Google Drive link instead (see
-> [Quick start on Google Colab](#quick-start-on-google-colab)).
+> Google Drive throttles files that were downloaded heavily in the past 24 hours. The
+> Colab notebook does not depend on this archive: it downloads the much smaller compiled
+> snapshots instead (see [Quick start on Google Colab](#quick-start-on-google-colab)).
 
 ### Compile datasets
 
-To compile the graphs in a usable tensor format, simply run `datasets.py` followed by the **dataset** name (name of the folder where the compiled graphs will be stored on disk) and the inductive experiment to apply on these graphs. The compiled graphs will be generated within the `lanl_optc_datasets` folder set in `ROOT`. Note that these commands may be run in parallel. If `dataset_name` is changed, please ensure to change it accordingly within `config.py`.
+To compile the graphs in a usable tensor format, simply run `datasets.py` followed by the **dataset** name (name of the folder where the compiled graphs will be stored on disk) and the inductive experiment to apply on these graphs. The compiled graphs will be generated within the `lanl_optc_datasets` folder set in `ROOT`. Note that these commands may be run in parallel. If `dataset_name` is changed, please ensure to change it accordingly within `config.py`. Setting `LARES_COMPRESS_COMPILED=1` writes the compiled snapshots as gzip-compressed pickles (several times smaller, loaded transparently); the compiled archive distributed with the Colab notebook was produced this way.
 
 > The hosts masked by `Exp1`-`Exp3` are drawn with a fixed seed, so compilation is
 > deterministic on a given Python version. The draw itself differs between Python 3.10
@@ -267,9 +267,9 @@ python src/main.py --config=OPTC_inductive_exp2 --lr=0.0001
 and trained weights), the preprocessed LANL and OpTC datasets with the ground-truth labels
 used in the paper, and the Colab notebook. No component is withheld after evaluation.
 
-**Requirements.** Linux or macOS, Python 3.9–3.12, ~2 GB of GPU memory (a CPU-only run is
-supported and is sufficient to evaluate from the released weights). Disk: ~5 GB for the
-weights-based path, >40 GB for the full pipeline.
+**Requirements.** Linux or macOS, Python 3.9–3.13, ~4 GB of RAM (a CPU-only run is
+sufficient to evaluate from the released weights; a GPU only speeds it up). Disk: ~2 GB
+for the weights-based path, >40 GB for the full pipeline.
 
 **Where each claim is reproduced.**
 
@@ -277,7 +277,7 @@ weights-based path, >40 GB for the full pipeline.
 |---|---|---|
 | Table II, LARES rows | `python src/main.py --config={LANL,OPTC}_inductive_exp{0,1,2,3} --use_weights=True` | no |
 | Table VII, LARES rows | same commands, node-level block of the output | no |
-| Figure 2, FP counts on LANL | notebook §5.2, from the Exp0 run | no |
+| Figure 2, FP counts on LANL | TP/FP counts of the Exp0 run above (baseline counts from §V-B) | no |
 | Table III, *Detection* row | add `--use_direct_edge_detection=True` | no |
 | Table III, other rows | *Ablation study* section above | yes |
 | Figures 1 and 4 | *MCC @ 10-100% of unseen hosts* section above | yes |
@@ -285,7 +285,8 @@ weights-based path, >40 GB for the full pipeline.
 
 Each command in the *From weights* section runs in a few minutes and prints the node-level
 metrics (stage 1, Table VII) followed by the edge-level metrics (stage 2, Table II). The
-notebook collects them into a table that is compared against the published values.
+Colab notebook runs the eight Table II commands and compares each metric against the
+published values.
 
 ## License
 
