@@ -253,6 +253,8 @@ def main(
             "tpr": tpr,
             "fpr": fpr,
             "f1": f1,
+            "ap": ap,
+            "auc": n_auc,
             "mcc": mcc,
         }
         
@@ -269,10 +271,13 @@ def main(
         if args.use_weights:
             break
 
+    # All metrics below come from the single best epoch (selected by edge-level MCC),
+    # so every reported number, AP included, belongs to the same model state.
     print(f"Best stats: {best_stats}")
     print(f"\nBest Metrics:")
     print(f"Recall: {best_stats['recall']}")
     print(f"Precision: {best_stats['precision']}")
+    print(f"AP: {best_stats['ap']}")
     print(f"MCC: {best_stats['mcc']}")
     
     # torch.save(
