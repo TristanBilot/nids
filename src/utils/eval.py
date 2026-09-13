@@ -55,7 +55,7 @@ class AbstractEvaluator:
             ap = float("nan")
 
         prompt = f"""Evaluation: found {tp} attacks / {len(attack_idxs)} attack samples ({(tp/len(attack_idxs))*100:.5f}%).\n""" \
-            f"""f"TPR: {tpr:.3f} | FPR: {fpr:.6f} | Overall acc: {overall_acc:.6f} | AP: {ap:.3f} | F1: {f1:.3f} | AUC: {auc:.3f} | recall: {recall:.3f} | precision: {precision:.3f} | MCC: {mcc:.2f}\n""" \
+            f"""TPR: {tpr:.3f} | FPR: {fpr:.6f} | Overall acc: {overall_acc:.6f} | F1: {f1:.3f} | recall: {recall:.3f} | precision: {precision:.3f} | MCC: {mcc:.2f}\n""" \
             f"""TP: {tp}/{len_positives} | FP: {fp}/{len_negatives}\n"""
         print(prompt)
 
